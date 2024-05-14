@@ -12,6 +12,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var buttonNewNote: Button
     private lateinit var notesDatabaseHelper: NotesDatabaseHelper
+    private lateinit var noteAdapter: NoteAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +39,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun displayNotes() {
         val notes = notesDatabaseHelper.getAllNotes()
-        Log.d("NotesDebug", "Number of notes: ${notes.size}") // Add this line to check the number of notes
-        val adapter = NoteAdapter(notes)
-        recyclerView.adapter = adapter
+        noteAdapter = NoteAdapter(notes, ::onNoteItemClick)
+        recyclerView.adapter = noteAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
+    }
+Now
+    private fun onNoteItemClick(note: Note) {
+        val intent = Intent(this, WriteNoteActivity::class.java)
+        intent.putExtra("noteId", note.id)
+        startActivity(intent)
     }
 }
