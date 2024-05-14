@@ -39,7 +39,7 @@ class WriteNoteActivity : AppCompatActivity() {
             if (noteText.isNotEmpty()) {
                 if (noteId != -1L) {
                     // If noteId is provided, it's an update operation
-                    val success = notesDatabaseHelper.saveNote(noteId, titleText, noteText)
+                    val success = notesDatabaseHelper.updateNote(noteId, titleText, noteText)
                     if (success) {
                         Toast.makeText(this, "Note updated successfully", Toast.LENGTH_SHORT).show()
                         setResult(Activity.RESULT_OK)

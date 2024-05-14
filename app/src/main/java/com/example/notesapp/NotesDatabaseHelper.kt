@@ -41,17 +41,6 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         return newRowId
     }
 
-    fun saveNote(noteId: Long, newTitle: String, newNote: String): Boolean {
-        val db = writableDatabase
-        val contentValues = ContentValues().apply {
-            put(COLUMN_TITLE, newTitle)
-            put(COLUMN_NOTE, newNote)
-        }
-        val updatedRows = db.update(TABLE_NAME, contentValues, "$COLUMN_ID=?", arrayOf(noteId.toString()))
-        db.close()
-        return updatedRows > 0
-    }
-
     fun readNote(id: Long): Triple<Long, String, String>? {
         var noteTriple: Triple<Long, String, String>? = null
         val db = readableDatabase
@@ -73,6 +62,23 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         return noteTriple
     }
 
+    fun updateNote(noteId: Long, newTitle: String, newNote: String): Boolean {
+        val db = writableDatabase
+        val contentValues = ContentValues().apply {
+            put(COLUMN_TITLE, newTitle)
+            put(COLUMN_NOTE, newNote)
+        }
+        val updatedRows = db.update(TABLE_NAME, contentValues, "$COLUMN_ID=?", arrayOf(noteId.toString()))
+        db.close()
+        return updatedRows > 0
+    }
+
+    fun deleteNote(id: Long): Boolean {
+        val db = writableDatabase
+        val deletedRows = db.delete(TABLE_NAME, "$COLUMN_ID=?", arrayOf(id.toString()))
+        return deletedRows > 0
+    }
+
     @SuppressLint("Range")
     fun getAllNotes(): List<Note> {
         val notes = mutableListOf<Note>()
@@ -88,22 +94,6 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
             }
         }
         return notes
-    }
-
-    fun updateNote(id: Long, newTitle: String, newNote: String): Boolean {
-        val db = writableDatabase
-        val contentValues = ContentValues().apply {
-            put(COLUMN_TITLE, newTitle)
-            put(COLUMN_NOTE, newNote)
-        }
-        val updatedRows = db.update(TABLE_NAME, contentValues, "$COLUMN_ID=?", arrayOf(id.toString()))
-        return updatedRows > 0
-    }
-
-    fun deleteNote(id: Long): Boolean {
-        val db = writableDatabase
-        val deletedRows = db.delete(TABLE_NAME, "$COLUMN_ID=?", arrayOf(id.toString()))
-        return deletedRows > 0
     }
 
 }
