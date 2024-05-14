@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = noteAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
     }
-Now
     private fun onNoteItemClick(note: Note) {
         val intent = Intent(this, WriteNoteActivity::class.java)
         intent.putExtra("noteId", note.id)
