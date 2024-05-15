@@ -148,12 +148,21 @@ class MainActivity : AppCompatActivity() {
                 else -> {
                     // Handle folder item click
                     val folder = folders[menuItem.itemId]
-                    // Implement your logic to display notes for the selected folder
+                    displayNotesByFolder(folder) // Display notes for the selected folder
                     true
                 }
             }
         }
     }
+
+    private fun displayNotesByFolder(folderName: String) {
+        val notes = notesDatabaseHelper.getNotesByFolder(folderName)
+        Log.d("MainActivity", "Displaying ${notes.size} notes for folder: $folderName")
+        noteAdapter = NoteAdapter(notes, ::onNoteItemClick, ::onDeleteButtonClick, ::onUpdateFolderClick)
+        recyclerView.adapter = noteAdapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
     private fun onNoteItemClick(note: Note) {
         Log.d("MainActivity", "Note clicked with ID: ${note.id}")
         val intent = Intent(this, WriteNoteActivity::class.java)

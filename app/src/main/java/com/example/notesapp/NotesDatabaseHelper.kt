@@ -143,5 +143,21 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         return folders
     }
 
+    @SuppressLint("Range")
+    fun getNotesByFolder(folderName: String): List<Note> {
+        val notes = mutableListOf<Note>()
+        val db = readableDatabase
+        val query = "SELECT $COLUMN_ID, $COLUMN_TITLE, $COLUMN_NOTE FROM $TABLE_NAME WHERE $COLUMN_FOLDER = ?"
+        val cursor = db.rawQuery(query, arrayOf(folderName))
+        cursor.use {
+            while (it.moveToNext()) {
+                val id = it.getLong(it.getColumnIndex(COLUMN_ID))
+                val title = it.getString(it.getColumnIndex(COLUMN_TITLE))
+                val note = it.getString(it.getColumnIndex(COLUMN_NOTE))
+                notes.add(Note(id, title, note))
+            }
+        }
+        return notes
+    }
 
 }
