@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -47,6 +48,20 @@ class MainActivity : AppCompatActivity() {
 
         val navigationView: NavigationView = findViewById(R.id.navigation_view)
         populateNavigationView(navigationView) // Populate navigation view with folders
+
+        // Set a listener for drawer open event
+        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+
+            override fun onDrawerOpened(drawerView: View) {
+                // Repopulate navigation view when the drawer is opened
+                populateNavigationView(navigationView)
+            }
+
+            override fun onDrawerClosed(drawerView: View) {}
+
+            override fun onDrawerStateChanged(newState: Int) {}
+        })
 
         recyclerView = findViewById(R.id.recyclerView)
         buttonNewNote = findViewById(R.id.buttonNewNote)
