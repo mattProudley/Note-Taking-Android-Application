@@ -52,7 +52,7 @@
         android:id="@+id/buttonSaveNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="304dp"
+        android:layout_marginStart="292dp"
         android:layout_marginBottom="24dp"
         android:text="Save"
         app:layout_constraintBottom_toBottomOf="parent"
