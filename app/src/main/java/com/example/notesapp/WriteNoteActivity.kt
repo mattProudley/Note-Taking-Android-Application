@@ -13,6 +13,7 @@ class WriteNoteActivity : AppCompatActivity() {
     private lateinit var editTextTitle: EditText
     private lateinit var editTextNote: EditText
     private lateinit var buttonSaveNote: Button
+    private lateinit var buttonCancelNote: Button
     private lateinit var notesDatabaseHelper: NotesDatabaseHelper
     private var noteId: Long = -1
 
@@ -23,6 +24,7 @@ class WriteNoteActivity : AppCompatActivity() {
         editTextTitle = findViewById(R.id.editTextTitle)
         editTextNote = findViewById(R.id.editTextNote)
         buttonSaveNote = findViewById(R.id.buttonSaveNote)
+        buttonCancelNote = findViewById(R.id.buttonCancelNote)
         notesDatabaseHelper = NotesDatabaseHelper(this)
 
         noteId = intent.getLongExtra("noteId", -1)
@@ -61,6 +63,13 @@ class WriteNoteActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Please include note content", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        // Add logic for the "Cancel" button
+        buttonCancelNote.setOnClickListener {
+            // Finish the activity without saving changes
+            setResult(Activity.RESULT_CANCELED)
+            finish()
         }
     }
 }
