@@ -3,17 +3,19 @@ package com.example.notesapp
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 
 class WriteNoteActivity : AppCompatActivity() {
 
     private lateinit var editTextTitle: EditText
     private lateinit var editTextNote: EditText
     private lateinit var buttonSaveNote: Button
-    private lateinit var buttonCancelNote: Button
     private lateinit var notesDatabaseHelper: NotesDatabaseHelper
     private var noteId: Long = -1
 
@@ -24,8 +26,10 @@ class WriteNoteActivity : AppCompatActivity() {
         editTextTitle = findViewById(R.id.editTextTitle)
         editTextNote = findViewById(R.id.editTextNote)
         buttonSaveNote = findViewById(R.id.buttonSaveNote)
-        buttonCancelNote = findViewById(R.id.buttonCancelNote)
         notesDatabaseHelper = NotesDatabaseHelper(this)
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
         noteId = intent.getLongExtra("noteId", -1)
         if (noteId != -1L) {
@@ -69,14 +73,26 @@ class WriteNoteActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please include note content", Toast.LENGTH_SHORT).show()
             }
         }
+    }
 
-        // Add logic for the "Cancel" button
-        buttonCancelNote.setOnClickListener {
-            // Finish the activity without saving changes
-            Log.d("WriteNoteActivity", "Cancel clicked, canceling changes")
-            setResult(Activity.RESULT_CANCELED)
-            finish()
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_write_note, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_back -> {
+                // Handle back button click
+                Log.d("WriteNoteActivity", "Back clicked, canceling changes")
+                setResult(Activity.RESULT_CANCELED)
+                finish()
+                true // Indicate that the item was handled
+            }
+            // Handle other menu items here
+            else -> super.onOptionsItemSelected(item)
         }
     }
+
 }
 
