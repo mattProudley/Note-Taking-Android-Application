@@ -92,23 +92,6 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
     }
 
     @SuppressLint("Range")
-    fun getAllNotes(): List<Note> {
-        val notes = mutableListOf<Note>()
-        val db = readableDatabase
-        val query = "SELECT $COLUMN_ID, $COLUMN_TITLE, $COLUMN_NOTE FROM $TABLE_NAME"
-        val cursor = db.rawQuery(query, null)
-        cursor.use {
-            while (it.moveToNext()) {
-                val id = it.getLong(it.getColumnIndex(COLUMN_ID))
-                val title = it.getString(it.getColumnIndex(COLUMN_TITLE))
-                val note = it.getString(it.getColumnIndex(COLUMN_NOTE))
-                notes.add(Note(id, title, note))
-            }
-        }
-        return notes
-    }
-
-    @SuppressLint("Range")
     fun searchNotesByTitle(title: String): List<Note> {
         val notes = mutableListOf<Note>()
         val db = this.readableDatabase
@@ -121,6 +104,23 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
                 val noteTitle = it.getString(it.getColumnIndex(COLUMN_TITLE))
                 val noteContent = it.getString(it.getColumnIndex(COLUMN_NOTE))
                 notes.add(Note(id, noteTitle, noteContent))
+            }
+        }
+        return notes
+    }
+
+    @SuppressLint("Range")
+    fun getAllNotes(): List<Note> {
+        val notes = mutableListOf<Note>()
+        val db = readableDatabase
+        val query = "SELECT $COLUMN_ID, $COLUMN_TITLE, $COLUMN_NOTE FROM $TABLE_NAME"
+        val cursor = db.rawQuery(query, null)
+        cursor.use {
+            while (it.moveToNext()) {
+                val id = it.getLong(it.getColumnIndex(COLUMN_ID))
+                val title = it.getString(it.getColumnIndex(COLUMN_TITLE))
+                val note = it.getString(it.getColumnIndex(COLUMN_NOTE))
+                notes.add(Note(id, title, note))
             }
         }
         return notes
