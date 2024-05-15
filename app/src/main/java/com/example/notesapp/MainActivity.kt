@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, WriteNoteActivity::class.java))
         }
 
-        displayNotes()
+        displayAllNotes()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
             .setView(editText)
             .setPositiveButton("Search") { dialog, _ ->
                 val searchText = editText.text.toString()
-                displayNotes(searchText) // Trigger displayNotes with search text
+                displayAllNotes(searchText) // Trigger displayNotes with search text
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
@@ -113,10 +113,10 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         // Refresh the list every time the activity resumes
         Log.d("MainActivity", "Activity resumed, refreshing notes list")
-        displayNotes()
+        displayAllNotes()
     }
 
-    private fun displayNotes(searchText: String? = null) {
+    private fun displayAllNotes(searchText: String? = null) {
         val notes = if (searchText.isNullOrEmpty()) {
             notesDatabaseHelper.getAllNotes()
         } else {
@@ -134,6 +134,14 @@ class MainActivity : AppCompatActivity() {
 
         // Clear existing menu items
         menu.clear()
+
+        // Add "All Notes" item at the top with an appropriate icon
+        menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "All Notes")
+            .setOnMenuItemClickListener {
+                // Display all notes when "All Notes" item is clicked
+                displayAllNotes()
+                true
+            }
 
         // Add folders as menu items
         folders.forEachIndexed { index, folder ->
@@ -180,7 +188,7 @@ class MainActivity : AppCompatActivity() {
             if (deleted) {
                 Log.d("MainActivity", "Note deleted with ID: ${note.id}")
                 Toast.makeText(this, "Note deleted", Toast.LENGTH_SHORT).show()
-                displayNotes() // Refresh the list
+                displayAllNotes() // Refresh the list
             } else {
                 Log.e("MainActivity", "Failed to delete note with ID: ${note.id}")
                 Toast.makeText(this, "Failed to delete note", Toast.LENGTH_SHORT).show()
