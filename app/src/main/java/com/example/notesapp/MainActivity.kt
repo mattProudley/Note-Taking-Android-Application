@@ -3,7 +3,10 @@ package com.example.notesapp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -68,6 +71,38 @@ class MainActivity : AppCompatActivity() {
         }
 
         displayNotes()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_search -> {
+                showSearchDialog()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showSearchDialog() {
+        val editText = EditText(this)
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Search")
+            .setView(editText)
+            .setPositiveButton("Search") { dialog, _ ->
+                val searchText = editText.text.toString()
+                // Perform search with searchText
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+        dialog.show()
     }
 
     override fun onResume() {
