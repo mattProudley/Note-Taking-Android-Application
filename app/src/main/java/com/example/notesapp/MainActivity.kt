@@ -140,6 +140,7 @@ class MainActivity : AppCompatActivity() {
             .setOnMenuItemClickListener {
                 // Display all notes when "All Notes" item is clicked
                 displayAllNotes()
+                drawerLayout.closeDrawers()
                 true
             }
 
@@ -157,6 +158,7 @@ class MainActivity : AppCompatActivity() {
                     // Handle folder item click
                     val folder = folders[menuItem.itemId]
                     displayNotesByFolder(folder) // Display notes for the selected folder
+                    drawerLayout.closeDrawers()
                     true
                 }
             }
