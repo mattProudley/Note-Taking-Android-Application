@@ -7,8 +7,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 
 class WriteNoteActivity : AppCompatActivity() {
@@ -23,14 +23,17 @@ class WriteNoteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_write_note)
 
+        // Initialize UI elements and database helper
         editTextTitle = findViewById(R.id.editTextTitle)
         editTextNote = findViewById(R.id.editTextNote)
         buttonSaveNote = findViewById(R.id.buttonSaveNote)
         notesDatabaseHelper = NotesDatabaseHelper(this)
 
+        // Set up toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        // Retrieve noteId from intent extras
         noteId = intent.getLongExtra("noteId", -1)
         if (noteId != -1L) {
             // If noteId is provided, it's an update operation
@@ -40,6 +43,7 @@ class WriteNoteActivity : AppCompatActivity() {
             editTextNote.setText(note?.third ?: "")
         }
 
+        // Set listener for save button click
         buttonSaveNote.setOnClickListener {
             val titleText = editTextTitle.text.toString().trim()
             val noteText = editTextNote.text.toString().trim()
@@ -70,12 +74,14 @@ class WriteNoteActivity : AppCompatActivity() {
                     }
                 }
             } else {
+                // Show toast if note content is empty
                 Toast.makeText(this, "Please include note content", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu for the activity
         menuInflater.inflate(R.menu.menu_write_note, menu)
         return true
     }
@@ -93,6 +99,4 @@ class WriteNoteActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
 }
-

@@ -15,34 +15,36 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         const val COLUMN_ID = "_id"
         const val COLUMN_TITLE = "title"
         const val COLUMN_NOTE = "note"
-        const val COLUMN_FOLDER = "folder" // New column for folder
+        const val COLUMN_FOLDER = "folder"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
+        // Create the database table when the database is created
         val createTable = "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_TITLE TEXT, $COLUMN_NOTE TEXT, $COLUMN_FOLDER TEXT)"
         db.execSQL(createTable)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (oldVersion < 3) {
-            // If upgrading from version 2 to version 3
+            // If upgrading from version 2 to version 3, add the folder column
             db.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $COLUMN_FOLDER TEXT")
         }
-        // Handle other upgrade scenarios, if any
     }
 
+    // Function to create a new note in the database
     fun createNote(newTitle: String, newNote: String, newFolder: String?): Long {
         val db = writableDatabase
         val contentValues = ContentValues().apply {
             put(COLUMN_TITLE, newTitle)
             put(COLUMN_NOTE, newNote)
-            put(COLUMN_FOLDER, newFolder) // Insert folder value
+            put(COLUMN_FOLDER, newFolder)
         }
         val newRowId = db.insert(TABLE_NAME, null, contentValues)
         db.close()
         return newRowId
     }
 
+    // Function to read a note from the database
     fun readNote(id: Long): Triple<Long, String, String>? {
         var noteTriple: Triple<Long, String, String>? = null
         val db = readableDatabase
@@ -64,6 +66,7 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         return noteTriple
     }
 
+    // Function to update a note in the database
     fun updateNote(noteId: Long, newTitle: String, newNote: String): Boolean {
         val db = writableDatabase
         val contentValues = ContentValues().apply {
@@ -75,6 +78,7 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         return updatedRows > 0
     }
 
+    // Function to update the folder of a note in the database
     fun updateNoteFolder(noteId: Long, newFolder: String): Boolean {
         val db = writableDatabase
         val contentValues = ContentValues().apply {
@@ -85,12 +89,14 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         return updatedRows > 0
     }
 
+    // Function to delete a note from the database
     fun deleteNote(id: Long): Boolean {
         val db = writableDatabase
         val deletedRows = db.delete(TABLE_NAME, "$COLUMN_ID=?", arrayOf(id.toString()))
         return deletedRows > 0
     }
 
+    // Function to search notes by title
     @SuppressLint("Range")
     fun searchNotesByTitle(title: String): List<Note> {
         val notes = mutableListOf<Note>()
@@ -109,6 +115,7 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         return notes
     }
 
+    // Function to get all notes from the database
     @SuppressLint("Range")
     fun getAllNotes(): List<Note> {
         val notes = mutableListOf<Note>()
@@ -126,6 +133,7 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         return notes
     }
 
+    // Function to get all distinct folders from the database
     @SuppressLint("Range")
     fun getAllFolders(): List<String> {
         val folders = mutableListOf<String>()
@@ -143,6 +151,7 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         return folders
     }
 
+    // Function to get notes by folder from the database
     @SuppressLint("Range")
     fun getNotesByFolder(folderName: String): List<Note> {
         val notes = mutableListOf<Note>()
@@ -159,5 +168,5 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         }
         return notes
     }
-
 }
+
