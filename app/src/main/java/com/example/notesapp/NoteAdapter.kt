@@ -7,17 +7,18 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.ImageButton
 
-
 class NoteAdapter(
     private val notes: List<Note>,
     private val onItemClick: (Note) -> Unit,
-    private val onDeleteClick: (Note) -> Unit
+    private val onDeleteClick: (Note) -> Unit,
+    private val onUpdateFolderClick: (Note) -> Unit
 ) : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 
     inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
         val previewTextView: TextView = itemView.findViewById(R.id.previewTextView)
         val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
+        val folderButton: ImageButton = itemView.findViewById(R.id.folderButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
@@ -32,11 +33,18 @@ class NoteAdapter(
         holder.previewTextView.text = currentNote.preview
 
         holder.itemView.setOnClickListener {
+            // Call onItemClick callback
             onItemClick(currentNote)
         }
 
         holder.deleteButton.setOnClickListener {
+            // Call onDeleteClick callback
             onDeleteClick(currentNote)
+        }
+
+        holder.folderButton.setOnClickListener {
+            // Call onUpdateFolderClick callback
+            onUpdateFolderClick(currentNote)
         }
     }
 

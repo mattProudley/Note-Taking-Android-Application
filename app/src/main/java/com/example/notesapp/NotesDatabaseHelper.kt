@@ -10,31 +10,33 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
 
     companion object {
         private const val DATABASE_NAME = "notes.db"
-        private const val DATABASE_VERSION = 2 // Incremented version number
+        private const val DATABASE_VERSION = 3 // Incremented version number
         const val TABLE_NAME = "notes"
         const val COLUMN_ID = "_id"
-        const val COLUMN_TITLE = "title" // New column for note title
+        const val COLUMN_TITLE = "title"
         const val COLUMN_NOTE = "note"
+        const val COLUMN_FOLDER = "folder" // New column for folder
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        val createTable = "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_TITLE TEXT, $COLUMN_NOTE TEXT)"
+        val createTable = "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_TITLE TEXT, $COLUMN_NOTE TEXT, $COLUMN_FOLDER TEXT)"
         db.execSQL(createTable)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        if (oldVersion < 2) {
-            // If upgrading from version 1 to version 2
-            db.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $COLUMN_TITLE TEXT")
+        if (oldVersion < 3) {
+            // If upgrading from version 2 to version 3
+            db.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $COLUMN_FOLDER TEXT")
         }
         // Handle other upgrade scenarios, if any
     }
 
-    fun createNote(newTitle: String, newNote: String): Long {
+    fun createNote(newTitle: String, newNote: String, newFolder: String?): Long {
         val db = writableDatabase
         val contentValues = ContentValues().apply {
             put(COLUMN_TITLE, newTitle)
             put(COLUMN_NOTE, newNote)
+            put(COLUMN_FOLDER, newFolder) // Insert folder value
         }
         val newRowId = db.insert(TABLE_NAME, null, contentValues)
         db.close()
@@ -67,6 +69,16 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         val contentValues = ContentValues().apply {
             put(COLUMN_TITLE, newTitle)
             put(COLUMN_NOTE, newNote)
+        }
+        val updatedRows = db.update(TABLE_NAME, contentValues, "$COLUMN_ID=?", arrayOf(noteId.toString()))
+        db.close()
+        return updatedRows > 0
+    }
+
+    fun updateNoteFolder(noteId: Long, newFolder: String): Boolean {
+        val db = writableDatabase
+        val contentValues = ContentValues().apply {
+            put(COLUMN_FOLDER, newFolder) // Update folder value
         }
         val updatedRows = db.update(TABLE_NAME, contentValues, "$COLUMN_ID=?", arrayOf(noteId.toString()))
         db.close()

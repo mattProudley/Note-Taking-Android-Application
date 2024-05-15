@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity() {
             notesDatabaseHelper.searchNotesByTitle(searchText)
         }
         Log.d("MainActivity", "Displaying ${notes.size} notes")
-        noteAdapter = NoteAdapter(notes, ::onNoteItemClick, ::onDeleteButtonClick)
+        noteAdapter = NoteAdapter(notes, ::onNoteItemClick, ::onDeleteButtonClick, ::onUpdateFolderClick)
         recyclerView.adapter = noteAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
     }
@@ -154,4 +154,29 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    private fun onUpdateFolderClick(note: Note) {
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle("Enter New Folder Name")
+
+        val input = EditText(this)
+        alertDialog.setView(input)
+
+        alertDialog.setPositiveButton("OK") { _, _ ->
+            val folderName = input.text.toString()
+            val noteId = note.id // Assuming note has an id property
+            val success = notesDatabaseHelper.updateNoteFolder(noteId, folderName)
+
+            if (success) {
+                Toast.makeText(this, "Folder updated successfully", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Failed to update folder", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        alertDialog.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.cancel()
+        }
+
+        alertDialog.show()
+    }
 }

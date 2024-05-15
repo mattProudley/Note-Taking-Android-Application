@@ -58,7 +58,7 @@ class WriteNoteActivity : AppCompatActivity() {
                     }
                 } else {
                     // Otherwise, it's a new note, so save it
-                    val newRowId = notesDatabaseHelper.createNote(titleText, noteText)
+                    val newRowId = notesDatabaseHelper.createNote(titleText, noteText, null)
                     if (newRowId != -1L) {
                         Log.d("WriteNoteActivity", "Note saved successfully with new ID: $newRowId")
                         Toast.makeText(this, "Note saved successfully", Toast.LENGTH_SHORT).show()
