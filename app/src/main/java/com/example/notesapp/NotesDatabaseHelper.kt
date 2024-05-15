@@ -126,5 +126,22 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         return notes
     }
 
+    @SuppressLint("Range")
+    fun getAllFolders(): List<String> {
+        val folders = mutableListOf<String>()
+        val db = readableDatabase
+        val query = "SELECT DISTINCT $COLUMN_FOLDER FROM $TABLE_NAME WHERE $COLUMN_FOLDER IS NOT NULL"
+        val cursor = db.rawQuery(query, null)
+        cursor.use {
+            while (it.moveToNext()) {
+                val folder = it.getString(it.getColumnIndex(COLUMN_FOLDER))
+                if (!folder.isNullOrBlank()) {
+                    folders.add(folder)
+                }
+            }
+        }
+        return folders
+    }
+
 
 }

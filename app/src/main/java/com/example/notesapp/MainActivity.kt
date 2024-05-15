@@ -32,6 +32,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        notesDatabaseHelper = NotesDatabaseHelper(this) // Initialize notesDatabaseHelper
+
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
@@ -44,20 +46,7 @@ class MainActivity : AppCompatActivity() {
         toggle.drawerArrowDrawable.color = white
 
         val navigationView: NavigationView = findViewById(R.id.navigation_view)
-        navigationView.setNavigationItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.nav_home -> {
-                    // Handle home click
-                    true
-                }
-                R.id.nav_settings -> {
-                    // Handle settings click
-                    true
-                }
-                // Handle other items here
-                else -> false
-            }
-        }
+        populateNavigationView(navigationView) // Populate navigation view with folders
 
         recyclerView = findViewById(R.id.recyclerView)
         buttonNewNote = findViewById(R.id.buttonNewNote)
@@ -122,6 +111,33 @@ class MainActivity : AppCompatActivity() {
         noteAdapter = NoteAdapter(notes, ::onNoteItemClick, ::onDeleteButtonClick, ::onUpdateFolderClick)
         recyclerView.adapter = noteAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
+    }
+    // Function to populate NavigationView with folders
+    private fun populateNavigationView(navigationView: NavigationView) {
+        val menu = navigationView.menu
+        val folders = notesDatabaseHelper.getAllFolders() // Retrieve folders from database
+
+        // Clear existing menu items
+        menu.clear()
+
+        // Add folders as menu items
+        folders.forEachIndexed { index, folder ->
+            menu.add(Menu.NONE, index, Menu.NONE, folder)
+                .setIcon(R.drawable.ic_folder) // Set folder icon
+        }
+
+        // Set navigation item selected listener
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            // Handle menu item selection here
+            when (menuItem.itemId) {
+                else -> {
+                    // Handle folder item click
+                    val folder = folders[menuItem.itemId]
+                    // Implement your logic to display notes for the selected folder
+                    true
+                }
+            }
+        }
     }
     private fun onNoteItemClick(note: Note) {
         Log.d("MainActivity", "Note clicked with ID: ${note.id}")
