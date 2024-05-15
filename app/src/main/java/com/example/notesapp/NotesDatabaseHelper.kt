@@ -96,4 +96,23 @@ class NotesDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE
         return notes
     }
 
+    @SuppressLint("Range")
+    fun searchNotesByTitle(title: String): List<Note> {
+        val notes = mutableListOf<Note>()
+        val db = this.readableDatabase
+        val query = "SELECT $COLUMN_ID, $COLUMN_TITLE, $COLUMN_NOTE FROM $TABLE_NAME WHERE $COLUMN_TITLE LIKE ?"
+        val selectionArgs = arrayOf("%$title%")
+        val cursor = db.rawQuery(query, selectionArgs)
+        cursor.use {
+            while (it.moveToNext()) {
+                val id = it.getLong(it.getColumnIndex(COLUMN_ID))
+                val noteTitle = it.getString(it.getColumnIndex(COLUMN_TITLE))
+                val noteContent = it.getString(it.getColumnIndex(COLUMN_NOTE))
+                notes.add(Note(id, noteTitle, noteContent))
+            }
+        }
+        return notes
+    }
+
+
 }

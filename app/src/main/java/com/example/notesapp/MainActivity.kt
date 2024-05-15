@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
             .setView(editText)
             .setPositiveButton("Search") { dialog, _ ->
                 val searchText = editText.text.toString()
-                // Perform search with searchText
+                displayNotes(searchText) // Trigger displayNotes with search text
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
@@ -112,8 +112,12 @@ class MainActivity : AppCompatActivity() {
         displayNotes()
     }
 
-    private fun displayNotes() {
-        val notes = notesDatabaseHelper.getAllNotes()
+    private fun displayNotes(searchText: String? = null) {
+        val notes = if (searchText.isNullOrEmpty()) {
+            notesDatabaseHelper.getAllNotes()
+        } else {
+            notesDatabaseHelper.searchNotesByTitle(searchText)
+        }
         Log.d("MainActivity", "Displaying ${notes.size} notes")
         noteAdapter = NoteAdapter(notes, ::onNoteItemClick, ::onDeleteButtonClick)
         recyclerView.adapter = noteAdapter
